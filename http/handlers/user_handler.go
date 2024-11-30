@@ -18,15 +18,14 @@ func NewUserHandler(userService *service.UserService) *UserHandler {
 
 func (h *UserHandler) RegisterUser(c *gin.Context) {
 	var req struct {
-		Username string `json:"username"`
-		Email    string `json:"email"`
+		Email *string `json:"email"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	user, err := h.userService.RegisterUser(req.Username, req.Email)
+	user, err := h.userService.RegisterUser(req.Email)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

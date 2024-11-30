@@ -16,11 +16,10 @@ func NewUserService(repo *repository.UserRepository) *UserService {
 	return &UserService{repo: repo}
 }
 
-func (s *UserService) RegisterUser(username, email string) (*domain.User, error) {
+func (s *UserService) RegisterUser(email *string) (*domain.User, error) {
 	user := &domain.User{
-		ID:       uuid.New().String(),
-		Username: username,
-		Email:    email,
+		ID:    uuid.New().String(),
+		Email: email,
 	}
 
 	if err := user.Validate(); err != nil {
@@ -29,9 +28,8 @@ func (s *UserService) RegisterUser(username, email string) (*domain.User, error)
 
 	// Convert to DB model and save
 	dbUser := &models.User{
-		ID:       uuid.MustParse(user.ID),
-		Username: user.Username,
-		Email:    user.Email,
+		ID:    uuid.MustParse(user.ID),
+		Email: user.Email,
 	}
 
 	if err := s.repo.Create(dbUser); err != nil {
@@ -48,8 +46,7 @@ func (s *UserService) GetUserByID(id string) (*domain.User, error) {
 	}
 
 	return &domain.User{
-		ID:       dbUser.ID.String(),
-		Username: dbUser.Username,
-		Email:    dbUser.Email,
+		ID:    dbUser.ID.String(),
+		Email: dbUser.Email,
 	}, nil
 }
